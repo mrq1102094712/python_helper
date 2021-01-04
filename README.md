@@ -1,4 +1,6 @@
 # python_helper
+Python is omnipotent !!!  
+Continuously updated !!!
 updated 2021.1.4   
 crop and merge pdf use PyPDF2   
 crop_pdf:   
