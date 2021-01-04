@@ -1,13 +1,11 @@
 # -*- coding:utf-8*-
-# 利用PyPDF2模块合并同一文件夹下的所有PDF文件
-# 只需修改存放PDF文件的文件夹变量：file_dir 和 输出文件名变量: outfile
+
 
 import os
 from PyPDF2 import PdfFileReader, PdfFileWriter
 import time
 
-# 使用os模块的walk函数，搜索出指定目录下的全部PDF文件
-# 获取同一目录下的所有PDF文件的绝对路径
+
 def getFileName(filedir):
 
     file_list = [os.path.join(root, filespath) \
@@ -17,7 +15,6 @@ def getFileName(filedir):
                  ]
     return file_list if file_list else []
 
-# 合并同一目录下的所有PDF文件
 def MergePDF(filepath, outfile):
 
     output = PdfFileWriter()
@@ -26,69 +23,37 @@ def MergePDF(filepath, outfile):
 
     if pdf_fileName:
         for pdf_file in pdf_fileName:
-            print("路径：%s"%pdf_file)
+            print("dir：%s"%pdf_file)
 
-            # 读取源PDF文件
+
             input = PdfFileReader(open(pdf_file, "rb"))
 
-            # 获得源PDF文件中页面总数
+            
             pageCount = input.getNumPages()
             outputPages += pageCount
-            print("页数：%d"%pageCount)
+            print("number_pages：%d"%pageCount)
 
-            # 分别将page添加到输出output中
+   
             for iPage in range(pageCount):
                 output.addPage(input.getPage(iPage))
 
-        print("合并后的总页数:%d."%outputPages)
+        print("all_pages:%d."%outputPages)
         # 写入到目标PDF文件
         outputStream = open(os.path.join(filepath, outfile), "wb")
         output.write(outputStream)
         outputStream.close()
-        print("PDF文件合并完成！")
+        print("merge done")
 
     else:
-        print("没有可以合并的PDF文件！")
+        print("no .pdf files")
 
-#获取pdf文件的大小
-def size_of_pdf(filepath):
-    output = PdfFileWriter()
-    outputPages = 0
-    pdf_fileName = getFileName(filepath)
-
-    A4_width = 595.32
-    A4_high = 841.92
-    if pdf_fileName:
-        for pdf_file in pdf_fileName:
-            print("路径：%s"%pdf_file)
-
-            # 读取源PDF文件
-            input = PdfFileReader(open(pdf_file, "rb"))
-
-            #输出['0', '0', width, height]
-            old_width = input.getPage(0).mediaBox.getUpperRight_x()
-            old_high = input.getPage(0).mediaBox.getUpperRight_y()
-            # print(input.getPage(0).mediaBox)
-            # print(old_width,old_high)
-
-            if old_high != A4_high or old_width != A4_width:
-                input.getPage(0).mediaBox.lowerRight = (A4_width,A4_high)
-
-            print(input.getPage(0).mediaBox)
-
-            pageCount = input.getNumPages()
-            outputPages += pageCount
-            for iPage in range(pageCount):
-                output.addPage(input.getPage(iPage))
-
-# 主函数
 def main():
     time1 = time.time()
-    file_dir = r'./pdf' # 存放PDF的原文件夹
-    outfile = "merge.pdf" # 输出的PDF文件的名称
+    file_dir = r'./pdf' 
+    outfile = "merge.pdf" 
     MergePDF(file_dir, outfile)
     # size_of_pdf(file_dir)
     time2 = time.time()
-    print('总共耗时：%s s.' %(time2 - time1))
+    print('times：%s s.' %(time2 - time1))
 
 main()
